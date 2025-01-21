@@ -33,6 +33,8 @@ function modifyColor(element, val) {
 function createNote() {
     let noteElm = document.createElement("div");
     noteElm.className = "notePanel";
+    noteElm.style.backgroundColor = "blueviolet";
+    modifyColor(noteElm, 0.4);
 
     let scaleSelectElm = document.createElement("select");
     for (scale of ["C", "D", "E", "F", "G", "A", "B"]) {
@@ -57,7 +59,6 @@ function createNote() {
         };
         event.target.parentElement.style.backgroundColor = convertTable[scale];
     };
-    scaleSelectElm.dispatchEvent(new Event("change"));
     noteElm.appendChild(scaleSelectElm);
 
     let isSharpSelectElm = document.createElement("select");
@@ -81,7 +82,6 @@ function createNote() {
         let octave = parseInt(event.target.value);
         modifyColor(event.target.parentElement, octave / 10);
     };
-    octaveNumInputElm.dispatchEvent(new Event("change"));
     noteElm.appendChild(octaveNumInputElm);
 
     let contiNumInputElm = document.createElement("input");
@@ -112,7 +112,12 @@ const addNoteBtn = document.getElementById("addNote");
 const noteEditor = document.getElementById("editor");
 
 addNoteBtn.addEventListener("click", function () {
-    noteEditor.appendChild(createNote());
+    let notePanel = createNote();
+    for (menu of notePanel.children) {
+        let event = new Event("change");
+        menu.dispatchEvent(event);
+    }
+    noteEditor.appendChild(notePanel);
 });
 
 function compileAll() {
