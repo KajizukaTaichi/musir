@@ -1,27 +1,9 @@
-function modifyColor(element, val) {
-    const currentBackgroundColor =
-        window.getComputedStyle(element).backgroundColor;
+function modifyColor(element, newAlpha) {
+    // 色名（redなど）の場合、色をrgbaに変換
+    const computedColor = window.getComputedStyle(element).color;
+    console.log(computedColor);
+    let rgbaValues = computedColor.match(/rgba\((\d+), (\d+), (\d+), (\d+)\)/);
 
-    let rgbaValues;
-    if (currentBackgroundColor.startsWith("rgb")) {
-        rgbaValues = currentBackgroundColor.match(/rgb\((\d+), (\d+), (\d+)\)/);
-        if (!rgbaValues) {
-            rgbaValues = currentBackgroundColor.match(
-                /rgba\((\d+), (\d+), (\d+), (\d+(\.\d+)?)\)/,
-            );
-        }
-    } else {
-        // 色名（redなど）の場合、色をrgbaに変換
-        const color = currentBackgroundColor;
-        const tempElement = document.createElement("div");
-        tempElement.style.color = color;
-        document.body.appendChild(tempElement);
-        const computedColor = window.getComputedStyle(tempElement).color;
-        rgbaValues = computedColor.match(/rgb\((\d+), (\d+), (\d+)\)/);
-        document.body.removeChild(tempElement);
-    }
-
-    const newAlpha = val;
     if (rgbaValues) {
         const red = rgbaValues[1];
         const green = rgbaValues[2];
@@ -32,8 +14,8 @@ function modifyColor(element, val) {
 
 function createNote() {
     let noteElm = document.createElement("div");
-    noteElm.className = "notePanel";
     noteElm.style.backgroundColor = "blueviolet";
+    noteElm.className = "notePanel";
     modifyColor(noteElm, 0.4);
 
     let scaleSelectElm = document.createElement("select");
@@ -113,10 +95,6 @@ const noteEditor = document.getElementById("editor");
 
 addNoteBtn.addEventListener("click", function () {
     let notePanel = createNote();
-    for (menu of notePanel.children) {
-        let event = new Event("change");
-        menu.dispatchEvent(event);
-    }
     noteEditor.appendChild(notePanel);
 });
 
