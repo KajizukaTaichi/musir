@@ -38,6 +38,13 @@ function createNote() {
     contiNumInputElm.ariaValueMax = 5;
     noteElm.appendChild(contiNumInputElm);
 
+    let playMeBtnElm = document.createElement("button");
+    playMeBtnElm.innerHTML = "Play";
+    playMeBtnElm.addEventListener("click", (event) => {
+        play([compile(event.target.parentElement)]);
+    });
+    noteElm.appendChild(playMeBtnElm);
+
     let delMeBtnElm = document.createElement("button");
     delMeBtnElm.innerHTML = "Delete";
     delMeBtnElm.addEventListener("click", (event) => {
@@ -55,16 +62,18 @@ addNoteBtn.addEventListener("click", function () {
     noteEditor.appendChild(createNote());
 });
 
-function compile() {
+function compileAll() {
     let result = [];
     for (note of noteEditor.children) {
-        let [scale, isSharp, octave, continueTime, _] = note.children;
-        result.push(
-            new Note(
-                scale.value + isSharp.value + octave.value,
-                parseFloat(continueTime.value),
-            ),
-        );
+        result.push(compile(note));
     }
     return result;
+}
+
+function compile(note) {
+    let [scale, isSharp, octave, continueTime, _, __] = note.children;
+    return new Note(
+        scale.value + isSharp.value + octave.value,
+        parseFloat(continueTime.value),
+    );
 }
