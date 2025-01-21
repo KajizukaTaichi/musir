@@ -46,25 +46,18 @@ function createNote() {
     }
     scaleSelectElm.onchange = function (event) {
         let scale = event.target.value;
-
-        let clr;
-        if (scale == "C") {
-            clr = "blueviolet";
-        } else if (scale == "D") {
-            clr = "blue";
-        } else if (scale == "E") {
-            clr = "aqua";
-        } else if (scale == "F") {
-            clr = "green";
-        } else if (scale == "G") {
-            clr = "yellow";
-        } else if (scale == "A") {
-            clr = "orange";
-        } else if (scale == "B") {
-            clr = "red";
-        }
-        event.target.parentElement.style.backgroundColor = clr;
+        let convertTable = {
+            C: "blueviolet",
+            D: "blue",
+            E: "aqua",
+            F: "green",
+            G: "yellow",
+            A: "orange",
+            B: "red",
+        };
+        event.target.parentElement.style.backgroundColor = convertTable[scale];
     };
+    scaleSelectElm.dispatchEvent(new Event("change"));
     noteElm.appendChild(scaleSelectElm);
 
     let isSharpSelectElm = document.createElement("select");
@@ -86,8 +79,9 @@ function createNote() {
     octaveNumInputElm.max = 6;
     octaveNumInputElm.onchange = function (event) {
         let octave = parseInt(event.target.value);
-        modifyColor(event.target.parentElement, (octave + 1) / 10);
+        modifyColor(event.target.parentElement, octave / 10);
     };
+    octaveNumInputElm.dispatchEvent(new Event("change"));
     noteElm.appendChild(octaveNumInputElm);
 
     let contiNumInputElm = document.createElement("input");
