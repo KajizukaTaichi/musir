@@ -31,6 +31,8 @@ function createNote() {
             B: "red",
         };
         event.target.parentElement.style.backgroundColor = convertTable[scale];
+        let octave = event.target.parentElement.children[2].value;
+        modifyColor(event.target.parentElement, octave / 10);
     };
     noteElm.appendChild(scaleSelectElm);
 
