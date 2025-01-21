@@ -1,15 +1,6 @@
 function modifyColor(element, newAlpha) {
-    // 色名（redなど）の場合、色をrgbaに変換
-    const computedColor = window.getComputedStyle(element).color;
-    console.log(computedColor);
-    let rgbaValues = computedColor.match(/rgba\((\d+), (\d+), (\d+), (\d+)\)/);
-
-    if (rgbaValues) {
-        const red = rgbaValues[1];
-        const green = rgbaValues[2];
-        const blue = rgbaValues[3];
-        element.style.backgroundColor = `rgba(${red}, ${green}, ${blue}, ${newAlpha})`;
-    }
+    const [red, green, blue, _] = chroma(element.style.backgroundColor).rgba();
+    element.style.backgroundColor = `rgba(${red}, ${green}, ${blue}, ${newAlpha})`;
 }
 
 function createNote() {
@@ -94,8 +85,7 @@ const addNoteBtn = document.getElementById("addNote");
 const noteEditor = document.getElementById("editor");
 
 addNoteBtn.addEventListener("click", function () {
-    let notePanel = createNote();
-    noteEditor.appendChild(notePanel);
+    noteEditor.appendChild(createNote());
 });
 
 function compileAll() {
