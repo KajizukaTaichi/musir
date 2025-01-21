@@ -1,3 +1,35 @@
+function modifyColor(element, val) {
+    const currentBackgroundColor =
+        window.getComputedStyle(element).backgroundColor;
+
+    let rgbaValues;
+    if (currentBackgroundColor.startsWith("rgb")) {
+        rgbaValues = currentBackgroundColor.match(/rgb\((\d+), (\d+), (\d+)\)/);
+        if (!rgbaValues) {
+            rgbaValues = currentBackgroundColor.match(
+                /rgba\((\d+), (\d+), (\d+), (\d+(\.\d+)?)\)/,
+            );
+        }
+    } else {
+        // 色名（redなど）の場合、色をrgbaに変換
+        const color = currentBackgroundColor;
+        const tempElement = document.createElement("div");
+        tempElement.style.color = color;
+        document.body.appendChild(tempElement);
+        const computedColor = window.getComputedStyle(tempElement).color;
+        rgbaValues = computedColor.match(/rgb\((\d+), (\d+), (\d+)\)/);
+        document.body.removeChild(tempElement);
+    }
+
+    const newAlpha = val;
+    if (rgbaValues) {
+        const red = rgbaValues[1];
+        const green = rgbaValues[2];
+        const blue = rgbaValues[3];
+        element.style.backgroundColor = `rgba(${red}, ${green}, ${blue}, ${newAlpha})`;
+    }
+}
+
 function createNote() {
     let noteElm = document.createElement("div");
     noteElm.className = "notePanel";
@@ -12,6 +44,27 @@ function createNote() {
         optElm.value = optElm.innerText;
         scaleSelectElm.appendChild(optElm);
     }
+    scaleSelectElm.onchange = function (event) {
+        let scale = event.target.value;
+
+        let clr;
+        if (scale == "C") {
+            clr = "blueviolet";
+        } else if (scale == "D") {
+            clr = "blue";
+        } else if (scale == "E") {
+            clr = "aqua";
+        } else if (scale == "F") {
+            clr = "green";
+        } else if (scale == "G") {
+            clr = "yellow";
+        } else if (scale == "A") {
+            clr = "orange";
+        } else if (scale == "B") {
+            clr = "red";
+        }
+        event.target.parentElement.style.backgroundColor = clr;
+    };
     noteElm.appendChild(scaleSelectElm);
 
     let isSharpSelectElm = document.createElement("select");
@@ -28,14 +81,20 @@ function createNote() {
 
     let octaveNumInputElm = document.createElement("input");
     octaveNumInputElm.value = 4;
-    octaveNumInputElm.ariaValueMin = 1;
-    octaveNumInputElm.ariaValueMax = 6;
+    octaveNumInputElm.type = "number";
+    octaveNumInputElm.min = 1;
+    octaveNumInputElm.max = 6;
+    octaveNumInputElm.onchange = function (event) {
+        let octave = parseInt(event.target.value);
+        modifyColor(event.target.parentElement, (octave + 1) / 10);
+    };
     noteElm.appendChild(octaveNumInputElm);
 
     let contiNumInputElm = document.createElement("input");
     contiNumInputElm.value = 0.5;
-    contiNumInputElm.ariaValueMin = 0;
-    contiNumInputElm.ariaValueMax = 5;
+    contiNumInputElm.type = "number";
+    contiNumInputElm.min = 0;
+    contiNumInputElm.max = 5;
     noteElm.appendChild(contiNumInputElm);
 
     let playMeBtnElm = document.createElement("button");
